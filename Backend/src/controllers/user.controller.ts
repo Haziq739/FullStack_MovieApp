@@ -12,7 +12,7 @@ const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
   return re.test(email);
 };
-
+// Controller Function for Api end point /register
 export const registerUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -38,6 +38,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+// Controller Function for Api end point /login
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
