@@ -1,6 +1,6 @@
-import express from 'express'; // Importing third party package
-import cors from 'cors';// Importing third party package
-import dotenv from 'dotenv';// Importing third party package
+import express from 'express'; // Initializing third party package
+import cors from 'cors';// Initializing third party package
+import dotenv from 'dotenv';// Initializing third party package
 import userRoutes from './routes/user.routes';
 import { connectDB } from './config/db';
 
