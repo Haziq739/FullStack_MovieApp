@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'; // Importing third party package
 import dotenv from 'dotenv'; // Importing third party package
 import { JWT_EXPIRES_IN, validateEmail } from '../config/constants';
 import { MESSAGE_CODES } from '../config/messageCodes'; // Importing responses from another file
+import { STATUS_CODES } from '../config/statusCodes'; // Importing status codes from another file
 
 dotenv.config();
 
@@ -16,30 +17,30 @@ export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body; 
 
   if (!name || !email || !password) {
-    return res.status(400).json({ message: MESSAGE_CODES.MISSING_SIGNUP_FIELDS });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGE_CODES.MISSING_SIGNUP_FIELDS });
   }
 
   if (!validateEmail(email)) {
-    return res.status(400).json({ message: MESSAGE_CODES.INVALID_EMAIL });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGE_CODES.INVALID_EMAIL });
   }
 
   if (password.length < 6) {
-    return res.status(400).json({ message: MESSAGE_CODES.SHORT_PASSWORD });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGE_CODES.SHORT_PASSWORD });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: MESSAGE_CODES.USER_EXISTS });
+      return res.status(STATUS_CODES.CONFLICT).json({ message: MESSAGE_CODES.USER_EXISTS });
     }
 
     const user = new User({ name, email, password }); 
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-    return res.status(201).json({ token });
+    return res.status(STATUS_CODES.CREATED).json({ token });
   } catch (error) {
-    return res.status(500).json({ message: 'Server error.' });
+    return res.status(STATUS_CODES.SERVER_ERROR).json({ message: 'Server error.' });
   }
 };
 
@@ -47,20 +48,20 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ message: MESSAGE_CODES.MISSING_LOGIN_FIELDS });
+    return res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGE_CODES.MISSING_LOGIN_FIELDS });
   }
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
+      return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
     }
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
+      return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
     }
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-    return res.status(200).json({ token });
+    return res.status(STATUS_CODES.OK).json({ token });
   } catch (error) {
-    return res.status(500).json({ message: MESSAGE_CODES.SERVER_ERROR });
+    return res.status(STATUS_CODES.SERVER_ERROR).json({ message: MESSAGE_CODES.SERVER_ERROR });
   }
 };
