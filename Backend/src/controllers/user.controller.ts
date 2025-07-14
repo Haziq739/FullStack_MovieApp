@@ -3,7 +3,7 @@ import User from '../models/user.model';// Importing User model Schema
 import jwt from 'jsonwebtoken'; // Importing third party package
 import dotenv from 'dotenv'; // Importing third party package
 import { JWT_EXPIRES_IN, validateEmail } from '../config/constants';
-
+import { MESSAGE_CODES } from '../config/messageCodes'; // Importing responses from another file
 
 dotenv.config();
 
@@ -16,21 +16,21 @@ export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body; 
 
   if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Name, email and password are required.' });
+    return res.status(400).json({ message: MESSAGE_CODES.MISSING_SIGNUP_FIELDS });
   }
 
   if (!validateEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email format.' });
+    return res.status(400).json({ message: MESSAGE_CODES.INVALID_EMAIL });
   }
 
   if (password.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters.' });
+    return res.status(400).json({ message: MESSAGE_CODES.SHORT_PASSWORD });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: 'User already exists.' });
+      return res.status(409).json({ message: MESSAGE_CODES.USER_EXISTS });
     }
 
     const user = new User({ name, email, password }); 
@@ -47,20 +47,20 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+    return res.status(400).json({ message: MESSAGE_CODES.MISSING_LOGIN_FIELDS });
   }
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+      return res.status(401).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
     }
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+      return res.status(401).json({ message: MESSAGE_CODES.INVALID_CREDENTIALS });
     }
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     return res.status(200).json({ token });
   } catch (error) {
-    return res.status(500).json({ message: 'Server error.' });
+    return res.status(500).json({ message: MESSAGE_CODES.SERVER_ERROR });
   }
 };
