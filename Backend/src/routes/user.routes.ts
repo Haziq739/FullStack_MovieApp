@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from 'express'; // Importing third party package
 import { registerUser, loginUser } from '../controllers/user.controller';
 
 const router = Router();

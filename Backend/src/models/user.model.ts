@@ -1,5 +1,6 @@
-import mongoose, { Document, Schema } from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose, { Document, Schema } from 'mongoose'; // Importing third party package
+import bcrypt from 'bcryptjs'; // Importing third party package
+
 
 export interface IUser extends Document {
   name?: string;

@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import User from '../models/user.model';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { Request, Response } from 'express'; // Importing third party package
+import User from '../models/user.model';// Importing User model Schema
+import jwt from 'jsonwebtoken'; // Importing third party package
+import dotenv from 'dotenv'; // Importing third party package
 import { JWT_EXPIRES_IN, validateEmail } from '../config/constants';
 
 

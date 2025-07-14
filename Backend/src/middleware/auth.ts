@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { Request, Response, NextFunction } from 'express'; // Importing third party package
+import jwt from 'jsonwebtoken'; // Importing third party package
+import dotenv from 'dotenv'; // Importing third party package
 
 dotenv.config();
 
