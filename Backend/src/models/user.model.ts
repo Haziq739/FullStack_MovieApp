@@ -1,13 +1,6 @@
-import mongoose, { Document, Schema } from 'mongoose'; // Importing third party package
+import mongoose, { Schema } from 'mongoose'; // Importing third party package
 import bcrypt from 'bcryptjs'; // Importing third party package
-
-
-export interface IUser extends Document {
-  name?: string;
-  email: string;
-  password: string;
-  comparePassword(candidatePassword: string): Promise<boolean>;
-}
+import { IUser } from '../types/user.types'; //Imported user.types.ts as IUser interface is defined there
 
 const UserSchema: Schema<IUser> = new Schema({
   name: {
