@@ -1,4 +1,7 @@
-export const JWT_EXPIRES_IN = '1h'; // Token expiry time
+import dotenv from 'dotenv'; // Importing third party package
+dotenv.config();
+
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN as string;
 
 // Regex for proper email validation
 export const validateEmail = (email: string) => {
