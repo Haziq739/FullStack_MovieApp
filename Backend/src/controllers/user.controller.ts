@@ -12,25 +12,31 @@ const validateEmail = (email: string) => {
   const re = /^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
   return re.test(email);
 };
-// Controller Function for Api end point /register
+
 export const registerUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+  const { name, email, password } = req.body; // ✅ ADD name here
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'Name, email and password are required.' });
   }
+
   if (!validateEmail(email)) {
     return res.status(400).json({ message: 'Invalid email format.' });
   }
+
   if (password.length < 6) {
     return res.status(400).json({ message: 'Password must be at least 6 characters.' });
   }
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists.' });
     }
-    const user = new User({ email, password });
+
+    const user = new User({ name, email, password }); // ✅ Save name
     await user.save();
+
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     return res.status(201).json({ token });
   } catch (error) {
@@ -38,7 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// Controller Function for Api end point /login
+
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
