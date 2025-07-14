@@ -10,6 +10,8 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 
+
+// Controller function for register user
 export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body; 
 
@@ -41,7 +43,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-
+// Controller Function for login user
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
