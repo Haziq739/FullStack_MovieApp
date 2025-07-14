@@ -2,19 +2,16 @@ import { Request, Response } from 'express';
 import User from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { JWT_EXPIRES_IN, validateEmail } from '../config/constants';
+
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
-const JWT_EXPIRES_IN = '1h';
 
-const validateEmail = (email: string) => {
-  const re = /^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\\.,;:\s@\"]+\.)+[^<>()[\]\\.,;:\s@\"]{2,})$/i;
-  return re.test(email);
-};
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body; // ✅ ADD name here
+  const { name, email, password } = req.body; 
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email and password are required.' });
@@ -34,7 +31,7 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(409).json({ message: 'User already exists.' });
     }
 
-    const user = new User({ name, email, password }); // ✅ Save name
+    const user = new User({ name, email, password }); 
     await user.save();
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
