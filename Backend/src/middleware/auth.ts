@@ -7,7 +7,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-
+// Middleware to verify JWT token
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
