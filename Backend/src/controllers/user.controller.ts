@@ -2,7 +2,7 @@ import { Request, Response } from 'express'; // Importing third party package
 import User from '../models/user.model';// Importing User model Schema
 import jwt from 'jsonwebtoken'; // Importing third party package
 import dotenv from 'dotenv'; // Importing third party package
-import { JWT_EXPIRES_IN, validateEmail } from '../utils/constants';
+import { JWT_EXPIRES_IN, validateEmail } from '../utils/validators';
 import { MESSAGE_CODES } from '../utils/messageCodes'; // Importing responses from another file
 import { STATUS_CODES } from '../utils/statusCodes'; // Importing status codes from another file
 
