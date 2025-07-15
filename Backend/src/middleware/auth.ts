@@ -1,14 +1,12 @@
-import { Request, Response, NextFunction } from 'express'; // Importing third party package
+import {Response, NextFunction } from 'express'; // Importing third party package
 import jwt from 'jsonwebtoken'; // Importing third party package
 import dotenv from 'dotenv'; // Importing third party package
+import { AuthRequest } from '../types/user.types'; // Adjust path if needed
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export interface AuthRequest extends Request {
-  user?: string | object;
-}
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
