@@ -1,4 +1,20 @@
+// Frontend
+
+Frontend/node_modules/
+Frontend/package-lock.json
+
+
+// Backend
 Backend/node_modules/
 Backend/dist/
 Backend/.env
 Backend/package-lock.json
+
+
+# Logs
+*.log
+
+# IDE/editor settings
+.vscode/
+.idea/
+
