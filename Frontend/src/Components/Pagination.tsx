@@ -1,4 +1,5 @@
 // src/components/Pagination.tsx
+// For pagination having 10 movies on 1 page displayed
 // Importing third party package
 import React from 'react';
 import { Box, Pagination } from '@mui/material'; // importing third party package

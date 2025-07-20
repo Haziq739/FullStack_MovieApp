@@ -6,6 +6,7 @@ import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 
+// Defining Interface for card 
 interface MovieCardProps {
   movie: OMDbSearchResult;
 }

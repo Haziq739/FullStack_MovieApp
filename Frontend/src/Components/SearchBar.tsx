@@ -1,5 +1,6 @@
 // src/Components/SearchBar.tsx
 // Importing third party package
+// Adding Search bar on dashboard
 import { Box, InputBase, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 

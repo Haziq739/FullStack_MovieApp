@@ -1,5 +1,7 @@
 // src/Components/TopBar.tsx
 // Importing third party package
+
+// Adding bar at top to display dashboard title 
 import { Box, Typography } from '@mui/material';
 
 const TopBar = () => {

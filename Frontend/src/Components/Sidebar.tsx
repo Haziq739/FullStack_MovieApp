@@ -1,5 +1,8 @@
 // src/components/Sidebar.tsx
 // Importing third party packages
+
+// Adding side bar on dashboard
+
 import { Box, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Skeleton } from '@mui/material';
 import { Home, Settings, Menu } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
