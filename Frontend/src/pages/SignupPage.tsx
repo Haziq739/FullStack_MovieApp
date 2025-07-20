@@ -1,4 +1,5 @@
 // src/pages/SignupPage.tsx
+// importing third party packages and components from material UI
 import {
   Box,
   Button,

@@ -1,4 +1,5 @@
 // src/pages/LandingPage.tsx
+// Importing third party package
 import { Button, Typography, Box, Skeleton } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
