@@ -1,4 +1,5 @@
 // src/Components/MovieCard.tsx
+// Importing Third Party Packages
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { OMDbSearchResult, OMDbMovieDetails } from '../types/omdb';
