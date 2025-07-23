@@ -2,6 +2,8 @@ import express from 'express'; // Initializing third party package
 import cors from 'cors';// Initializing third party package
 import dotenv from 'dotenv';// Initializing third party package
 import userRoutes from './routes/user.routes';
+import movieRoutes from './routes/movie.routes';
+import favoriteRoutes from './routes/favorite.routes';
 import { connectDB } from './config/db';
 
 dotenv.config();
@@ -19,6 +21,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/movies', movieRoutes);
+app.use('/api/favorites', favoriteRoutes);
 
 // Connect to DB and start server
 connectDB().then(() => {

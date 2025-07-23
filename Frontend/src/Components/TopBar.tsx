@@ -14,6 +14,10 @@ const TopBar = () => {
         boxShadow: '0 2px 5px rgba(0,0,0,0.5)',
       }}
     >
+      <Typography variant="h5" fontWeight="bold">
+        Movie App
+      </Typography>
+      {/* You can place user profile, notifications, etc. here */}
       <TextField
         placeholder="Search movies..."
         variant="outlined"
