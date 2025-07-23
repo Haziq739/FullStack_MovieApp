@@ -4,6 +4,7 @@ import LandingPage from '../pages/LandingPage';
 import SignupPage from '../pages/SignupPage';
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage'; 
+import MovieDetailPage from '../pages/MovieDetailPage';
 
 const AppRoutes = () => {
   return (
@@ -12,6 +13,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<DashboardPage />} /> {/* ✅ Added */}
+      <Route path="/movieDetails" element={<MovieDetailPage />} />
     </Routes>
   );
 };
