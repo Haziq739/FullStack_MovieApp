@@ -13,9 +13,11 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<DashboardPage />} /> {/* ✅ Added */}
-      <Route path="/movie/:imdbID" element={<MovieDetailPage />} />
+      <Route path="/movieDetails" element={<MovieDetailPage />} />
     </Routes>
   );
 };
 
 export default AppRoutes;
+
+

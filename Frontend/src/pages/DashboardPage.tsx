@@ -1,4 +1,8 @@
 // src/pages/DashboardPage.tsx
+<<<<<<< HEAD
+=======
+// Importing third part packages
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Sidebar from '../components/Sidebar';
@@ -6,7 +10,11 @@ import TopBar from '../components/TopBar';
 import SearchBar from '../components/SearchBar';
 import MovieCard from '../components/MovieCard';
 import Button from '@mui/material/Button';
+<<<<<<< HEAD
 import { useEffect, useState, useRef } from 'react';
+=======
+import { useEffect, useState, useCallback } from 'react';
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../components/Pagination';
@@ -18,23 +26,36 @@ const DashboardPage = () => {
   const [inputQuery, setInputQuery] = useState('batman');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+<<<<<<< HEAD
+=======
+  const [loading, setLoading] = useState(false);
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
   const [initialLoading, setInitialLoading] = useState(true);
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+<<<<<<< HEAD
   const isFetching = useRef(false); // Prevent multiple fetches
+=======
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/signup');
   };
 
+<<<<<<< HEAD
   const fetchMovies = async () => {
     if (!searchQuery || isFetching.current) return;
 
     isFetching.current = true;
     setInitialLoading(true);
 
+=======
+  const fetchMovies = useCallback(async () => {
+    if (!searchQuery || loading) return;
+    setLoading(true);
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
     try {
       const response = await axios.get(`http://localhost:5000/api/movies/search`, {
         params: { query: searchQuery, page },
@@ -51,6 +72,7 @@ const DashboardPage = () => {
     } catch (error) {
       console.error('Search error:', error);
     } finally {
+<<<<<<< HEAD
       setInitialLoading(false);
       isFetching.current = false;
     }
@@ -68,6 +90,23 @@ const DashboardPage = () => {
       setPage(1);
       setSearchQuery(trimmedQuery);
       setInitialLoading(true);
+=======
+      setLoading(false);
+      setInitialLoading(false);
+    }
+  }, [searchQuery, page, token, loading]);
+
+  useEffect(() => {
+    fetchMovies();
+  }, [fetchMovies]);
+
+  const handleSearch = () => {
+    if (inputQuery.trim()) {
+      setMovies([]);                //Prevent flicker by clearing old results
+      setPage(1);                   // Reset to page 1
+      setSearchQuery(inputQuery.trim());  // Trigger new search
+      setInitialLoading(true);      // Show loading state
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
     }
   };
 
@@ -91,8 +130,13 @@ const DashboardPage = () => {
         backgroundImage: `url('https://wallpapers.com/images/high/caesar-in-war-of-the-planet-of-the-apes-15yh1qci8ttsxmyl.webp')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+<<<<<<< HEAD
         backgroundAttachment: 'fixed',
         overflow: 'hidden',
+=======
+        backgroundAttachment: 'fixed', // Fix background to prevent shifting
+        overflow: 'hidden', // Prevent page-level scrolling
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
         fontFamily: '"Poppins", sans-serif',
       }}
     >
@@ -104,8 +148,13 @@ const DashboardPage = () => {
           color: 'white',
           background: 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))',
           overflowY: 'auto',
+<<<<<<< HEAD
           maxHeight: '100vh',
           scrollBehavior: 'smooth',
+=======
+          maxHeight: '100vh', // Ensure content stays within viewport height
+          scrollBehavior: 'smooth', // Smooth scrolling for content
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -174,4 +223,8 @@ const DashboardPage = () => {
   );
 };
 
+<<<<<<< HEAD
 export default DashboardPage;
+=======
+export default DashboardPage;
+>>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
