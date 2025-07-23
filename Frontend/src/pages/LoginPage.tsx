@@ -1,5 +1,6 @@
 // src/pages/LoginPage.tsx
-import {
+// Importing third packages and components from material UI
+import { 
   Box,
   Button,
   TextField,

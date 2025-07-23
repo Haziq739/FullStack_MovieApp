@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'; // Importing third party package
 import bcrypt from 'bcryptjs'; // Importing third party package
-import { IUser } from '../types/user.types'; //Imported user.types.ts as IUser interface is defined there
+import { IUser } from '../types/user.types'; // Imported user.types.ts as IUser interface is defined there
 
 const UserSchema: Schema<IUser> = new Schema({
   name: {
@@ -20,6 +20,8 @@ const UserSchema: Schema<IUser> = new Schema({
     required: true,
     minlength: 6,
   },
+
+
 });
 
 UserSchema.pre<IUser>('save', async function (next) {
