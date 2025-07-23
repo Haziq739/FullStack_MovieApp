@@ -1,5 +1,4 @@
 // src/pages/DashboardPage.tsx
-// Importing third part packages
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Sidebar from '../components/Sidebar';
@@ -7,7 +6,7 @@ import TopBar from '../components/TopBar';
 import SearchBar from '../components/SearchBar';
 import MovieCard from '../components/MovieCard';
 import Button from '@mui/material/Button';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../components/Pagination';
@@ -19,20 +18,23 @@ const DashboardPage = () => {
   const [inputQuery, setInputQuery] = useState('batman');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const isFetching = useRef(false); // Prevent multiple fetches
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/signup');
   };
 
-  const fetchMovies = useCallback(async () => {
-    if (!searchQuery || loading) return;
-    setLoading(true);
+  const fetchMovies = async () => {
+    if (!searchQuery || isFetching.current) return;
+
+    isFetching.current = true;
+    setInitialLoading(true);
+
     try {
       const response = await axios.get(`http://localhost:5000/api/movies/search`, {
         params: { query: searchQuery, page },
@@ -49,21 +51,23 @@ const DashboardPage = () => {
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      setLoading(false);
       setInitialLoading(false);
+      isFetching.current = false;
     }
-  }, [searchQuery, page, token, loading]);
+  };
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchMovies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, page]);
 
   const handleSearch = () => {
-    if (inputQuery.trim()) {
-      setMovies([]);                //Prevent flicker by clearing old results
-      setPage(1);                   // Reset to page 1
-      setSearchQuery(inputQuery.trim());  // Trigger new search
-      setInitialLoading(true);      // Show loading state
+    const trimmedQuery = inputQuery.trim();
+    if (trimmedQuery && trimmedQuery !== searchQuery) {
+      setMovies([]);
+      setPage(1);
+      setSearchQuery(trimmedQuery);
+      setInitialLoading(true);
     }
   };
 
@@ -87,8 +91,8 @@ const DashboardPage = () => {
         backgroundImage: `url('https://wallpapers.com/images/high/caesar-in-war-of-the-planet-of-the-apes-15yh1qci8ttsxmyl.webp')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed', // Fix background to prevent shifting
-        overflow: 'hidden', // Prevent page-level scrolling
+        backgroundAttachment: 'fixed',
+        overflow: 'hidden',
         fontFamily: '"Poppins", sans-serif',
       }}
     >
@@ -100,8 +104,8 @@ const DashboardPage = () => {
           color: 'white',
           background: 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))',
           overflowY: 'auto',
-          maxHeight: '100vh', // Ensure content stays within viewport height
-          scrollBehavior: 'smooth', // Smooth scrolling for content
+          maxHeight: '100vh',
+          scrollBehavior: 'smooth',
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
