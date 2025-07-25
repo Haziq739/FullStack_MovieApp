@@ -1,4 +1,3 @@
-// src/pages/DashboardPage.tsx
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Sidebar from '../components/Sidebar';
@@ -15,10 +14,11 @@ import type { OMDbSearchResult } from '../types/omdb';
 const DashboardPage = () => {
   const [movies, setMovies] = useState<OMDbSearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState('batman');
-  const [inputQuery, setInputQuery] = useState('batman');
+  const [inputQuery, setInputQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [favorites, setFavorites] = useState<string[]>([]); // ✅ NEW
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/signup');
+    navigate('/login');
   };
 
   const fetchMovies = async () => {
@@ -60,6 +60,24 @@ const DashboardPage = () => {
     fetchMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, page]);
+
+  // ✅ NEW EFFECT: Fetch favorites
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/favorites/list', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFavorites(res.data.favorites || []);
+      } catch (err) {
+        console.error('Failed to fetch favorites:', err);
+      }
+    };
+
+    if (token) {
+      fetchFavorites();
+    }
+  }, [token]);
 
   const handleSearch = () => {
     const trimmedQuery = inputQuery.trim();
@@ -108,6 +126,7 @@ const DashboardPage = () => {
           scrollBehavior: 'smooth',
         }}
       >
+        {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <TopBar />
           <Button
@@ -127,6 +146,7 @@ const DashboardPage = () => {
           </Button>
         </Box>
 
+        {/* Search Bar */}
         <SearchBar
           query={inputQuery}
           setQuery={setInputQuery}
@@ -134,38 +154,57 @@ const DashboardPage = () => {
           onEnterKeyDown={handleKeyDown}
         />
 
-        <Box display="flex" flexWrap="wrap" gap={3} mt={2}>
-          {initialLoading
-            ? Array.from({ length: 8 }).map((_, index) => (
-                <Box
-                  key={index}
-                  width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
-                >
-                  <Skeleton
-                    variant="rectangular"
-                    width="100%"
-                    height={350}
-                    sx={{ borderRadius: 2, bgcolor: '#2c2c2c' }}
-                  />
-                  <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
-                  <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
-                </Box>
-              ))
-            : movies.map((movie) => (
-                <Box
-                  key={movie.imdbID}
-                  width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
-                >
-                  <MovieCard movie={movie} />
-                </Box>
-              ))}
+        {/* Movie Grid */}
+        <Box display="flex" flexWrap="wrap" gap={3} mt={2} minHeight="400px">
+          {initialLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <Box
+                key={index}
+                width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
+              >
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  height={350}
+                  sx={{ borderRadius: 2, bgcolor: '#2c2c2c' }}
+                />
+                <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
+                <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
+              </Box>
+            ))
+          ) : movies.length === 0 ? (
+            <Box
+              width="100%"
+              textAlign="center"
+              mt={4}
+              fontSize="1.2rem"
+              fontWeight="bold"
+              color="gray"
+            >
+              No movies found for your search.
+            </Box>
+          ) : (
+            movies.map((movie) => (
+              <Box
+                key={movie.imdbID}
+                width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
+              >
+                <MovieCard
+                  movie={movie}
+                  favorites={favorites}
+                  setFavorites={setFavorites}
+                />
+              </Box>
+            ))
+          )}
         </Box>
 
-        {!initialLoading && totalResults > 10 && (
+        {/* Pagination (if results exist) */}
+        {!initialLoading && movies.length > 0 && totalResults > 10 && (
           <CustomPagination
             page={page}
             setPage={setPage}
-            totalPages={Math.ceil(totalResults / 10)}
+            totalPages={Math.ceil(totalResults / 12)}
             onPageChange={handlePageChange}
           />
         )}

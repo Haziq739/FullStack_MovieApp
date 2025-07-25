@@ -65,3 +65,21 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(STATUS_CODES.SERVER_ERROR).json({ message: MESSAGE_CODES.SERVER_ERROR });
   }
 };
+
+// For my profile page
+
+// Get current logged-in user's profile
+export const getCurrentUser = async (req: Request, res: Response) => {
+  console.log('I am getting hit')
+  const userId = (req as any).user; // Extract userId from verified token
+
+  try {
+    const user = await User.findById(userId).select('name email');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to fetch user profile.' });
+  }
+};

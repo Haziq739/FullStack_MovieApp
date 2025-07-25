@@ -1,5 +1,4 @@
 // src/pages/SignupPage.tsx
-// importing third party packages and components from material UI
 import {
   Box,
   Button,
@@ -7,11 +6,13 @@ import {
   Typography,
   Container,
   Alert,
+  Link,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion'; // ✅ Added for animation
 
 interface FormData {
   name: string;
@@ -71,94 +72,119 @@ const SignupPage = () => {
         px: 2,
       }}
     >
-      <Container
-        maxWidth="xs"
-        sx={{
-          backgroundColor: 'rgba(0,0,0,0.75)',
-          p: 3,
-          borderRadius: 3,
-          boxShadow: '0 0 20px rgba(255, 0, 0, 0.3)',
-        }}
+      {/* ✅ Animation wrapper */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       >
-        <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          sx={{ color: '#fff', fontWeight: 600 }}
+        <Container
+          maxWidth="xs"
+          sx={{
+            backgroundColor: 'rgba(0,0,0,0.75)',
+            p: 3,
+            borderRadius: 3,
+            boxShadow: '0 0 20px rgba(255, 0, 0, 0.3)',
+          }}
         >
-          Sign Up
-        </Typography>
-
-        {errorMsg && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMsg}
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <TextField
-            fullWidth
-            label="Name"
-            variant="outlined"
-            margin="dense"
-            {...register('name', { required: 'Name is required' })}
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message || ''}
-            InputLabelProps={{ style: { color: '#fff' } }}
-            InputProps={{ style: { color: '#fff' } }}
-          />
-
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            variant="outlined"
-            margin="dense"
-            {...register('email', { required: 'Email is required' })}
-            error={Boolean(errors.email)}
-            helperText={errors.email?.message || ''}
-            InputLabelProps={{ style: { color: '#fff' } }}
-            InputProps={{ style: { color: '#fff' } }}
-          />
-
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            variant="outlined"
-            margin="dense"
-            {...register('password', { required: 'Password is required' })}
-            error={Boolean(errors.password)}
-            helperText={errors.password?.message || ''}
-            InputLabelProps={{ style: { color: '#fff' } }}
-            InputProps={{ style: { color: '#fff' } }}
-          />
-
-          <TextField
-            fullWidth
-            label="Confirm Password"
-            type="password"
-            variant="outlined"
-            margin="dense"
-            {...register('confirmPassword', { required: 'Please confirm your password' })}
-            error={Boolean(errors.confirmPassword)}
-            helperText={errors.confirmPassword?.message || ''}
-            InputLabelProps={{ style: { color: '#fff' } }}
-            InputProps={{ style: { color: '#fff' } }}
-          />
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            sx={{ mt: 3, fontWeight: 600 }}
+          <Typography
+            variant="h5"
+            align="center"
+            gutterBottom
+            sx={{ color: '#fff', fontWeight: 600 }}
           >
-            Register
-          </Button>
-        </form>
-      </Container>
+            Sign Up
+          </Typography>
+
+          {errorMsg && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {errorMsg}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <TextField
+              fullWidth
+              label="Name"
+              variant="outlined"
+              margin="dense"
+              {...register('name', { required: 'Name is required' })}
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message || ''}
+              InputLabelProps={{ style: { color: '#fff' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
+
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              variant="outlined"
+              margin="dense"
+              {...register('email', { required: 'Email is required' })}
+              error={Boolean(errors.email)}
+              helperText={errors.email?.message || ''}
+              InputLabelProps={{ style: { color: '#fff' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
+
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              variant="outlined"
+              margin="dense"
+              {...register('password', { required: 'Password is required' })}
+              error={Boolean(errors.password)}
+              helperText={errors.password?.message || ''}
+              InputLabelProps={{ style: { color: '#fff' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
+
+            <TextField
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              variant="outlined"
+              margin="dense"
+              {...register('confirmPassword', {
+                required: 'Please confirm your password',
+              })}
+              error={Boolean(errors.confirmPassword)}
+              helperText={errors.confirmPassword?.message || ''}
+              InputLabelProps={{ style: { color: '#fff' } }}
+              InputProps={{ style: { color: '#fff' } }}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              sx={{ mt: 3, fontWeight: 600 }}
+            >
+              Register
+            </Button>
+          </form>
+
+          {/* ✅ Navigation to Login */}
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ mt: 2, color: '#ccc' }}
+          >
+            Already have an account?{' '}
+            <Link
+              onClick={() => navigate('/login')}
+              sx={{ cursor: 'pointer', color: '#90caf9', fontWeight: 500 }}
+              underline="hover"
+            >
+              Login
+            </Link>
+          </Typography>
+        </Container>
+      </motion.div>
     </Box>
   );
 };
