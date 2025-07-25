@@ -82,7 +82,6 @@ const LandingPage = () => {
         <Box mt={4}>
           <Button
             variant="contained"
-            color="error"
             size="large"
             sx={{
               mx: 2,
@@ -90,6 +89,9 @@ const LandingPage = () => {
               py: 1.5,
               fontWeight: 600,
               boxShadow: '0 4px 10px rgba(255, 0, 0, 0.4)',
+              '&:hover': {
+                color: '#fff', // Keep text white on hover
+              },
             }}
             href="/login"
           >

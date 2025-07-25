@@ -7,6 +7,7 @@ export interface IUser extends Document {
   name?: string;
   email: string;
   password: string;
+  favorites?: string[]; // Added favorites field
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

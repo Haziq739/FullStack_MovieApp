@@ -21,7 +21,11 @@ const UserSchema: Schema<IUser> = new Schema({
     minlength: 6,
   },
 
-
+  // New field for storing favorite movie IMDb IDs
+  favorites: {
+    type: [String], // array of IMDb IDs
+    default: [],
+  },
 });
 
 UserSchema.pre<IUser>('save', async function (next) {
