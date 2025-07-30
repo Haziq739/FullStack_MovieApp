@@ -9,8 +9,8 @@ import {
   Skeleton,
   useTheme,
 } from '@mui/material';
-import Sidebar from '../components/Sidebar';
-import TopBar from '../components/TopBar';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/TopBar';
 
 interface UserData {
   name: string;

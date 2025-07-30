@@ -9,9 +9,9 @@ import {
   Button,
   useTheme,
 } from '@mui/material';
-import Sidebar from '../components/Sidebar';
-import TopBar from '../components/TopBar';
-import MovieCard from '../components/MovieCard';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/TopBar';
+import MovieCard from '../Components/MovieCard';
 import type { OMDbMovieDetails } from '../types/omdb';
 
 const FavoritesPage = () => {

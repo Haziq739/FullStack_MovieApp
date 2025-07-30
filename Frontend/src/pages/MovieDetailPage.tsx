@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import type { OMDbMovieDetails } from '../types/omdb';
-import Sidebar from '../components/Sidebar';
-import TopBar from '../components/TopBar';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/TopBar';
 
 const MovieDetailPage = () => {
   const { imdbID } = useParams<{ imdbID: string }>();

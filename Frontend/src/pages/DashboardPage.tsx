@@ -1,15 +1,15 @@
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
-import Sidebar from '../components/Sidebar';
-import TopBar from '../components/TopBar';
-import SearchBar from '../components/SearchBar';
-import MovieCard from '../components/MovieCard';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/TopBar';
+import SearchBar from '../Components/SearchBar';
+import MovieCard from '../Components/MovieCard';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import CustomPagination from '../components/Pagination';
+import CustomPagination from '../Components/Pagination';
 import type { OMDbSearchResult } from '../types/omdb';
 import { useTheme } from '@mui/material/styles';
 
