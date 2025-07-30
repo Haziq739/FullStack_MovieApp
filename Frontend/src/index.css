@@ -66,3 +66,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* ✅ Autofill background fix (added at the end) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 600000s 0s, color 600000s 0s;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: white;
+  box-shadow: 0 0 0px 1000px #121212 inset !important; /* matches dark input bg */
+}

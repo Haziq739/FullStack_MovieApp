@@ -1,229 +1,238 @@
-// src/Components/MovieCard.tsx
-<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { OMDbSearchResult, OMDbMovieDetails } from '../types/omdb';
-import { Card, CardMedia, Typography, Box } from '@mui/material';
+import {
+  Card,
+  CardMedia,
+  Typography,
+  Box,
+  IconButton,
+  Snackbar,
+  Alert as MuiAlert,
+} from '@mui/material';
 import axios from 'axios';
-=======
-// imporing third party packages
-import { useState, useEffect } from 'react';
-import type {OMDbSearchResult, OMDbMovieDetails} from '../types/omdb';
-import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
-import axios from 'axios';
-import { motion } from 'framer-motion';
->>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 interface MovieCardProps {
   movie: OMDbSearchResult;
+  favorites: string[];
+  setFavorites: React.Dispatch<React.SetStateAction<string[]>>;
+  setMovies?: React.Dispatch<React.SetStateAction<OMDbMovieDetails[]>>;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-<<<<<<< HEAD
+const MovieCard: React.FC<MovieCardProps> = ({
+  movie,
+  favorites,
+  setFavorites,
+  setMovies,
+}) => {
   const [hovered, setHovered] = useState(false);
   const [details, setDetails] = useState<OMDbMovieDetails | null>(null);
+  const [hasImageError, setHasImageError] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const posterUrl =
-    movie.Poster && movie.Poster !== 'N/A'
-      ? movie.Poster
-      : 'https://via.placeholder.com/300x400?text=No+Image';
-=======
-  const [flipped, setFlipped] = useState(false);
-  const [details, setDetails] = useState<OMDbMovieDetails | null>(null);
-  const token = localStorage.getItem('token');
+  const isFavorite = favorites.includes(movie.imdbID);
+  const shouldShowFallback = !movie.Poster || movie.Poster === 'N/A' || hasImageError;
 
-  const handleFlip = () => {
-    setFlipped((prev) => !prev);
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      if (!token) return;
+
+      if (isFavorite) {
+        await axios.delete(
+          `http://localhost:5000/api/favorites/remove/${movie.imdbID}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setFavorites((prev) => prev.filter((id) => id !== movie.imdbID));
+
+        if (setMovies) {
+          setMovies((prev) => prev.filter((m) => m.imdbID !== movie.imdbID));
+        }
+
+        setSnackbarMessage('Removed from Favorites');
+        setSnackbarOpen(true);
+      } else {
+        await axios.post(
+          'http://localhost:5000/api/favorites/add',
+          { imdbID: movie.imdbID },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setFavorites((prev) => [...prev, movie.imdbID]);
+
+        setSnackbarMessage('Added to Favorites');
+        setSnackbarOpen(true);
+      }
+    } catch (err) {
+      console.error('Favorite toggle failed:', err);
+    }
   };
->>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/movies/${movie.imdbID}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `http://localhost:5000/api/movies/${movie.imdbID}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setDetails(res.data);
       } catch (err) {
-        console.error("Failed to fetch movie details:", err);
+        console.error('Failed to fetch movie details:', err);
       }
     };
 
-<<<<<<< HEAD
     if (hovered && !details) {
       fetchDetails();
     }
   }, [hovered, details, movie.imdbID, token]);
 
   return (
-    <Card
-      sx={{
-        width: '100%',
-        height: 350,
-        background: 'linear-gradient(to bottom, #000, #8b0000)',
-        borderRadius: 2,
-        overflow: 'hidden',
-        cursor: 'pointer',
-        color: 'white',
-        position: 'relative',
-        transition: 'transform 0.3s ease',
-        '&:hover': {
-          transform: 'scale(1.02)',
-        },
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => navigate(`/movie/${movie.imdbID}`)}
-    >
-      {/* Poster */}
-      <CardMedia
-        component="img"
-        image={posterUrl}
-        alt={movie.Title}
-        sx={{ height: '100%', objectFit: 'cover' }}
-      />
-
-      {/* ⭐ Rating */}
-      {details?.imdbRating && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            color: '#FFD700',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            fontSize: '0.75rem',
-            fontWeight: 'bold',
-            zIndex: 2,
-          }}
-        >
-          ⭐ {details.imdbRating}
-        </Box>
-      )}
-
-      {/* Hover Overlay */}
-      {hovered && details && (
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: '50%',
-            background: 'rgba(0, 0, 0, 0.85)',
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <Typography variant="h6" noWrap>
-            {movie.Title}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {movie.Year} • {movie.Type}
-          </Typography>
-          <Typography variant="body2" mt={1}>
-            {details.Plot.length > 100 ? `${details.Plot.slice(0, 100)}...` : details.Plot}
-          </Typography>
-          <Typography variant="caption" color="gray" mt={1}>
-            Genre: {details.Genre}
-          </Typography>
-        </Box>
-      )}
-    </Card>
-=======
-    if (flipped && !details) {
-      fetchDetails();
-    }
-  }, [flipped, details, movie.imdbID, token]);
-
-  return (
-    <Box
-      component={motion.div}
-      onClick={handleFlip}
-      sx={{ perspective: 1000, cursor: 'pointer' }}
-    >
-      <Box
-        component={motion.div}
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6 }}
+    <>
+      <Card
         sx={{
-          position: 'relative',
-          transformStyle: 'preserve-3d',
           width: '100%',
           height: 350,
+          background: 'linear-gradient(to bottom, #000, #8b0000)',
+          borderRadius: 2,
+          overflow: 'hidden',
+          cursor: 'pointer',
+          color: 'white',
+          position: 'relative',
+          transition: 'transform 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.02)',
+          },
         }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={() => navigate(`/movie/${movie.imdbID}`)}
       >
-        {/* Front Side */}
-        <Card
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-            background: 'linear-gradient(to bottom, #000, #8b0000)',
-            color: 'white',
-            borderRadius: 2,
-            overflow: 'hidden',
-          }}
-        >
+        {shouldShowFallback ? (
+          <Box
+            sx={{
+              height: '100%',
+              width: '100%',
+              backgroundColor: '#1c1c1c',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              px: 2,
+              textAlign: 'center',
+            }}
+          >
+            <Typography variant="h6" color="gray">
+              No poster available
+            </Typography>
+            <Typography variant="body2">{movie.Title}</Typography>
+          </Box>
+        ) : (
           <CardMedia
             component="img"
-            image={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x400?text=No+Image'}
+            image={movie.Poster}
             alt={movie.Title}
-            sx={{ height: 250 }}
+            sx={{ height: '100%', width: '100%', objectFit: 'cover' }}
+            onError={() => setHasImageError(true)}
           />
-          <CardContent>
+        )}
+
+        {details?.imdbRating && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 10,
+              right: 40,
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              color: '#FFD700',
+              padding: '2px 8px',
+              borderRadius: '12px',
+              fontSize: '0.75rem',
+              fontWeight: 'bold',
+              zIndex: 2,
+            }}
+          >
+            ⭐ {details.imdbRating}
+          </Box>
+        )}
+
+        <IconButton
+          onClick={handleToggleFavorite}
+          sx={{
+            position: 'absolute',
+            top: 5,
+            right: 5,
+            color: 'red',
+            zIndex: 3,
+          }}
+        >
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        </IconButton>
+
+        {hovered && details && (
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              height: '50%',
+              background: 'rgba(0, 0, 0, 0.85)',
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+            }}
+          >
             <Typography variant="h6" noWrap>
               {movie.Title}
             </Typography>
             <Typography variant="body2" color="gray">
               {movie.Year} • {movie.Type}
             </Typography>
-          </CardContent>
-        </Card>
+            <Typography variant="body2" mt={1}>
+              {details.Plot.length > 100
+                ? `${details.Plot.slice(0, 100)}...`
+                : details.Plot}
+            </Typography>
+            <Typography variant="caption" color="gray" mt={1}>
+              Genre: {details.Genre}
+            </Typography>
+          </Box>
+        )}
+      </Card>
 
-        {/* Back Side */}
-        <Card
+      {/* Snackbar for success message */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity="success"
+          variant="filled"
           sx={{
-            position: 'absolute',
             width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
-            backgroundColor: '#1c1c1c',
-            color: 'white',
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            borderRadius: 2,
+            backgroundColor: '#b71c1c', // 🔴 Dark red
+            color: '#fff',
+            fontWeight: 'bold',
           }}
         >
-          {details ? (
-            <>
-              <Typography variant="h6" gutterBottom>
-                {details.Title}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {details.Plot}
-              </Typography>
-              <Typography variant="caption">
-                Genre: {details.Genre}
-              </Typography>
-            </>
-          ) : (
-            <Typography variant="body2">Loading details...</Typography>
-          )}
-        </Card>
-      </Box>
-    </Box>
->>>>>>> f8bf9514a248d80b5da1fc25b2dce9cd64be725b
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
+    </>
   );
 };
 
