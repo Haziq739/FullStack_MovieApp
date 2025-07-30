@@ -1,6 +1,6 @@
 // src/Components/SearchBar.tsx
-// Importing third party package
-import { Box, InputBase, IconButton } from '@mui/material';
+
+import { Box, InputBase, IconButton, useTheme } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface Props {
@@ -11,12 +11,16 @@ interface Props {
 }
 
 const SearchBar: React.FC<Props> = ({ query, setQuery, onSearch, onEnterKeyDown }) => {
+  const theme = useTheme();
+
+  const isDark = theme.palette.mode === 'dark';
+
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
-        bgcolor: 'rgba(255, 255, 255, 0.1)',
+        bgcolor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', // adaptive background
         px: 2,
         borderRadius: 2,
         width: '100%',
@@ -31,9 +35,16 @@ const SearchBar: React.FC<Props> = ({ query, setQuery, onSearch, onEnterKeyDown 
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={onEnterKeyDown}
-        sx={{ color: 'white', flex: 1 }}
+        sx={{
+          color: theme.palette.text.primary, // adaptive text color
+          flex: 1,
+          '&::placeholder': {
+            color: theme.palette.text.secondary, // optional placeholder styling
+            opacity: 1,
+          },
+        }}
       />
-      <IconButton onClick={onSearch} sx={{ color: 'white' }}>
+      <IconButton onClick={onSearch} sx={{ color: theme.palette.text.primary }}>
         <SearchIcon />
       </IconButton>
     </Box>

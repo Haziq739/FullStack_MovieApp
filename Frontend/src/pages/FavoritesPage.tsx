@@ -7,6 +7,7 @@ import {
   Skeleton,
   Typography,
   Button,
+  useTheme,
 } from '@mui/material';
 import Sidebar from '../components/Sidebar';
 import TopBar from '../components/TopBar';
@@ -20,9 +21,10 @@ const FavoritesPage = () => {
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   useEffect(() => {
-    // 🔐 Redirect if no token
     if (!token) {
       navigate('/login');
       return;
@@ -63,8 +65,10 @@ const FavoritesPage = () => {
         sx={{
           flex: 1,
           p: 4,
-          background: 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))',
-          color: 'white',
+          background: isDark
+            ? 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))'
+            : theme.palette.background.default,
+          color: theme.palette.text.primary,
           overflowY: 'auto',
         }}
       >
@@ -77,9 +81,16 @@ const FavoritesPage = () => {
           <Box display="flex" flexWrap="wrap" gap={3}>
             {Array.from({ length: 6 }).map((_, i) => (
               <Box key={i} width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}>
-                <Skeleton variant="rectangular" height={350} sx={{ borderRadius: 2 }} />
-                <Skeleton />
-                <Skeleton />
+                <Skeleton
+                  variant="rectangular"
+                  height={350}
+                  sx={{
+                    borderRadius: 2,
+                    bgcolor: isDark ? '#2c2c2c' : '#e0e0e0', // dynamic skeleton color
+                  }}
+                />
+                <Skeleton sx={{ bgcolor: isDark ? '#2c2c2c' : '#e0e0e0' }} />
+                <Skeleton sx={{ bgcolor: isDark ? '#2c2c2c' : '#e0e0e0' }} />
               </Box>
             ))}
           </Box>

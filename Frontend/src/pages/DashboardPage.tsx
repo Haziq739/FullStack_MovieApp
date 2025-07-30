@@ -5,24 +5,29 @@ import TopBar from '../components/TopBar';
 import SearchBar from '../components/SearchBar';
 import MovieCard from '../components/MovieCard';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CustomPagination from '../components/Pagination';
 import type { OMDbSearchResult } from '../types/omdb';
+import { useTheme } from '@mui/material/styles';
 
 const DashboardPage = () => {
+  const theme = useTheme();
+
   const [movies, setMovies] = useState<OMDbSearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState('batman');
   const [inputQuery, setInputQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [favorites, setFavorites] = useState<string[]>([]); // ✅ NEW
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [userName, setUserName] = useState('');
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-  const isFetching = useRef(false); // Prevent multiple fetches
+  const isFetching = useRef(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -56,12 +61,23 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchMovies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, page]);
+  const fetchUserName = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/users/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserName(res.data.name);
+    } catch (err) {
+      console.error('Failed to fetch user info:', err);
+    }
+  };
 
-  // ✅ NEW EFFECT: Fetch favorites
+  useEffect(() => {//  FIXED HERE: only fetch if token exists
+    if(token){
+    fetchMovies();
+    }
+  }, [searchQuery, page, token]); 
+
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -76,6 +92,7 @@ const DashboardPage = () => {
 
     if (token) {
       fetchFavorites();
+      fetchUserName();
     }
   }, [token]);
 
@@ -106,11 +123,8 @@ const DashboardPage = () => {
         width: '100vw',
         height: '100vh',
         display: 'flex',
-        backgroundImage: `url('https://wallpapers.com/images/high/caesar-in-war-of-the-planet-of-the-apes-15yh1qci8ttsxmyl.webp')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        overflow: 'hidden',
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
         fontFamily: '"Poppins", sans-serif',
       }}
     >
@@ -119,14 +133,15 @@ const DashboardPage = () => {
         sx={{
           flex: 1,
           p: 4,
-          color: 'white',
-          background: 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))',
+          background: theme.palette.mode === 'dark'
+            ? 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(139,0,0,0.7))'
+            : theme.palette.background.default,
+          color: theme.palette.text.primary,
           overflowY: 'auto',
           maxHeight: '100vh',
           scrollBehavior: 'smooth',
         }}
       >
-        {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <TopBar />
           <Button
@@ -146,7 +161,10 @@ const DashboardPage = () => {
           </Button>
         </Box>
 
-        {/* Search Bar */}
+        <Typography variant="h5" fontWeight="bold" mt={1} mb={2}>
+          Welcome{userName ? `, ${userName}` : ''}
+        </Typography>
+
         <SearchBar
           query={inputQuery}
           setQuery={setInputQuery}
@@ -154,52 +172,36 @@ const DashboardPage = () => {
           onEnterKeyDown={handleKeyDown}
         />
 
-        {/* Movie Grid */}
         <Box display="flex" flexWrap="wrap" gap={3} mt={2} minHeight="400px">
           {initialLoading ? (
             Array.from({ length: 8 }).map((_, index) => (
-              <Box
-                key={index}
-                width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
-              >
+              <Box key={index} width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}>
                 <Skeleton
                   variant="rectangular"
                   width="100%"
                   height={350}
-                  sx={{ borderRadius: 2, bgcolor: '#2c2c2c' }}
+                  sx={{
+                    borderRadius: 2,
+                    bgcolor: theme.palette.mode === 'dark' ? '#2c2c2c' : '#ccc',
+                  }}
                 />
-                <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
-                <Skeleton variant="text" sx={{ bgcolor: '#2c2c2c' }} />
+                <Skeleton variant="text" sx={{ bgcolor: theme.palette.mode === 'dark' ? '#2c2c2c' : '#ccc' }} />
+                <Skeleton variant="text" sx={{ bgcolor: theme.palette.mode === 'dark' ? '#2c2c2c' : '#ccc' }} />
               </Box>
             ))
           ) : movies.length === 0 ? (
-            <Box
-              width="100%"
-              textAlign="center"
-              mt={4}
-              fontSize="1.2rem"
-              fontWeight="bold"
-              color="gray"
-            >
+            <Box width="100%" textAlign="center" mt={4} fontSize="1.2rem" fontWeight="bold" color="gray">
               No movies found for your search.
             </Box>
           ) : (
             movies.map((movie) => (
-              <Box
-                key={movie.imdbID}
-                width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}
-              >
-                <MovieCard
-                  movie={movie}
-                  favorites={favorites}
-                  setFavorites={setFavorites}
-                />
+              <Box key={movie.imdbID} width={{ xs: '100%', sm: '48%', md: '31%', lg: '23%' }}>
+                <MovieCard movie={movie} favorites={favorites} setFavorites={setFavorites} />
               </Box>
             ))
           )}
         </Box>
 
-        {/* Pagination (if results exist) */}
         {!initialLoading && movies.length > 0 && totalResults > 10 && (
           <CustomPagination
             page={page}
