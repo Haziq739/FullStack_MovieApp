@@ -41,7 +41,7 @@ const DashboardPage = () => {
     setInitialLoading(true);
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/movies/search`, {
+      const response = await axios.get('http://localhost:5000/api/movies/search', {
         params: { query: searchQuery, page },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -72,11 +72,11 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {//  FIXED HERE: only fetch if token exists
-    if(token){
-    fetchMovies();
+  useEffect(() => {
+    if (token) {
+      fetchMovies();
     }
-  }, [searchQuery, page, token]); 
+  }, [searchQuery, page, token]);
 
   useEffect(() => {
     const fetchFavorites = async () => {

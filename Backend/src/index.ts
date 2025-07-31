@@ -24,6 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/favorites', favoriteRoutes);
 
+
 // Connect to DB and start server
 connectDB().then(() => {
   app.listen(PORT, () => {
